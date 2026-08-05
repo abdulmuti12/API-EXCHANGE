@@ -20,6 +20,7 @@ class UserFurnitureResource extends JsonResource
             'brand_id'      => $this->brand_id,
             'brand_text'    => $this->brand_text,
             'brand'         => $this->whenLoaded('brand', fn () => $this->brand ? new BrandResource($this->brand) : null),
+            'admin_price'   => $this->admin_price,
             'images'        => $this->whenLoaded('images', fn () => $this->images->pluck('image_url')->values()),
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,

@@ -55,6 +55,7 @@ Route::prefix('admin')->middleware('role:admin')->group(function () {
     Route::patch('transactions/{id}/checking', [AdminTransactionController::class, 'startChecking']);
     Route::patch('transactions/{id}/approve',  [AdminTransactionController::class, 'approve']);
     Route::patch('transactions/{id}/reject',   [AdminTransactionController::class, 'reject']);
+    Route::patch('transactions/{id}/set-price',[AdminTransactionController::class, 'setPrice']);
 
     // Transaction messages (chat)
     Route::get('transactions/{id}/messages',   [TransactionMessageController::class, 'index']);

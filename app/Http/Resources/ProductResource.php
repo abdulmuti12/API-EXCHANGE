@@ -17,6 +17,7 @@ class ProductResource extends JsonResource
             'status'      => $this->status,
             'category'    => $this->whenLoaded('category', fn () => new CategoryResource($this->category)),
             'brand'       => $this->whenLoaded('brand', fn () => new BrandResource($this->brand)),
+            'price'       => $this->price,
             'image1'      => $this->image1,
             'image2'      => $this->image2,
             'image3'      => $this->image3,

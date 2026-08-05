@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Admin\RejectTransactionRequest;
+use App\Http\Requests\Admin\UpdateFurniturePriceRequest;
 use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
 use App\Services\TransactionService;
@@ -91,6 +92,19 @@ class TransactionController extends BaseController
         return $this->sendResponse(
             new TransactionResource($transaction),
             'Transaksi ditolak.'
+        );
+    }
+
+    public function setPrice(UpdateFurniturePriceRequest $request, string $id): JsonResponse
+    {
+        $transaction = Transaction::with('userFurniture')->findOrFail($id);
+        $transaction->userFurniture->update([
+            'admin_price' => $request->validated()['admin_price'],
+        ]);
+
+        return $this->sendResponse(
+            null,
+            'Harga barang pengguna berhasil diatur.'
         );
     }
 }

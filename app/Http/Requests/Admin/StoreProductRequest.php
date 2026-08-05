@@ -25,6 +25,7 @@ class StoreProductRequest extends FormRequest
             'image4'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
             'image5'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
             'image6'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'price'       => 'nullable|numeric|min:0',
             'status'      => ['nullable', Rule::in(['available', 'swapped', 'inactive'])],
             'images'      => 'nullable|array',
             'images.*'    => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',

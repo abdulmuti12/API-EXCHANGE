@@ -20,7 +20,12 @@ class UserFurniture extends Model
         'brand_id',
         'brand_text',
         'description',
+        'admin_price',
         'status',
+    ];
+
+    protected $casts = [
+        'admin_price' => 'decimal:2',
     ];
 
     public function user()
