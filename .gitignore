@@ -1,0 +1,54 @@
+# Laravel
+/vendor
+/node_modules
+/public/build
+/public/hot
+/storage/*.key
+/storage/app/public
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/testing
+/storage/framework/views
+/storage/logs
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Composer
+/vendor
+composer.phar
+
+# NPM
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHPUnit
+.phpunit.result.cache
+
+# Laravel Pint
+.pint.cache
+
+# Laravel Sail
+docker-compose.override.yml
+
+# Coverage
+coverage
+coverage.xml
+
+# Misc
+*.log
