@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class FurnitureController extends BaseController
@@ -43,27 +44,35 @@ class FurnitureController extends BaseController
         ]);
     }
 
-    public function store(StoreFurnitureRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
-        $data = $request->validated();
+        $request->validate([
+            'name'          => 'required|string|max:255',
+            'category_id'   => 'nullable|uuid|exists:categories,id',
+            'category_text' => 'nullable|string|max:255|required_without:category_id',
+            'brand_id'      => 'nullable|uuid|exists:brands,id',
+            'brand_text'    => 'nullable|string|max:255|required_without:brand_id',
+            'description'   => 'nullable|string',
+            'images'        => 'nullable|array',
+            'images.*'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+        ]);
+
+        $data = $request->only(['name', 'description', 'category_id', 'category_text', 'brand_id', 'brand_text']);
         $data['user_id'] = Auth::guard('user')->id();
         $data['status']  = 'available';
 
-        $furniture = DB::transaction(function () use ($data) {
-            $images = $data['images'] ?? [];
-            unset($data['images']);
-
+        $furniture = DB::transaction(function () use ($request, $data) {
             $furniture = UserFurniture::create($data);
 
-            foreach ($images as $i => $url) {
-                if (! $url) {
-                    continue;
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $i => $image) {
+                    $path = $image->store('user_furnitures', 'public');
+                    UserFurnitureImage::create([
+                        'user_furniture_id' => $furniture->id,
+                        'image_url'         => '/storage/' . $path,
+                        'sort_order'        => $i,
+                    ]);
                 }
-                UserFurnitureImage::create([
-                    'user_furniture_id' => $furniture->id,
-                    'image_url'         => $url,
-                    'sort_order'        => $i,
-                ]);
             }
 
             return $furniture->load(['category', 'brand', 'images']);
@@ -79,10 +88,50 @@ class FurnitureController extends BaseController
         return $this->sendResponse(new UserFurnitureResource($furniture->load(['category', 'brand', 'images'])));
     }
 
-    public function update(UpdateFurnitureRequest $request, string $id): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
+        $request->validate([
+            'name'          => 'sometimes|required|string|max:255',
+            'category_id'   => 'sometimes|nullable|uuid|exists:categories,id',
+            'category_text' => 'sometimes|nullable|string|max:255',
+            'brand_id'      => 'sometimes|nullable|uuid|exists:brands,id',
+            'brand_text'    => 'sometimes|nullable|string|max:255',
+            'description'   => 'sometimes|nullable|string',
+            'images'        => 'nullable|array',
+            'images.*'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'remove_images' => 'nullable|array',
+            'remove_images.*' => 'string|exists:user_furniture_images,id',
+        ]);
+
         $furniture = $this->findOwned($id);
-        $furniture->update($request->validated());
+
+        $updateData = $request->only(['name', 'description', 'category_id', 'category_text', 'brand_id', 'brand_text']);
+        $furniture->update($updateData);
+
+        // Remove deleted images
+        if ($request->filled('remove_images')) {
+            foreach ($request->input('remove_images') as $imageId) {
+                $image = $furniture->images()->where('id', $imageId)->first();
+                if ($image) {
+                    Storage::disk('public')->delete(ltrim($image->image_url, '/'));
+                    $image->delete();
+                }
+            }
+        }
+
+        // Add new uploaded images
+        if ($request->hasFile('images')) {
+            $maxSort = (int) $furniture->images()->max('sort_order');
+            foreach ($request->file('images') as $i => $image) {
+                if ($image) {
+                    $path = $image->store('user_furnitures', 'public');
+                    $furniture->images()->create([
+                        'image_url' => '/storage/' . $path,
+                        'sort_order' => $maxSort + 1 + $i,
+                    ]);
+                }
+            }
+        }
 
         return $this->sendResponse(
             new UserFurnitureResource($furniture->fresh()->load(['category', 'brand', 'images'])),
@@ -107,16 +156,32 @@ class FurnitureController extends BaseController
         return $this->sendResponse(null, 'Furniture berhasil dihapus.');
     }
 
-    public function storeImage(StoreFurnitureImageRequest $request, string $id): JsonResponse
+    public function storeImage(Request $request, string $id): JsonResponse
     {
-        $furniture = $this->findOwned($id);
+        $request->validate([
+            'image_url' => 'nullable|string|max:255',
+            'image'     => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
 
+        $furniture = $this->findOwned($id);
         $maxSort = (int) $furniture->images()->max('sort_order');
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('user_furnitures', 'public');
+            $imageUrl = '/storage/' . $path;
+        } else {
+            $imageUrl = $request->input('image_url');
+        }
+
+        if (! $imageUrl) {
+            return $this->sendError('Gambar gagal diunggah.', ['image' => ['File gambar wajib diisi.']], 422);
+        }
 
         $image = UserFurnitureImage::create([
             'user_furniture_id' => $furniture->id,
-            'image_url'         => $request->validated()['image_url'],
-            'sort_order'        => $request->validated()['sort_order'] ?? ($maxSort + 1),
+            'image_url'         => $imageUrl,
+            'sort_order'        => $request->input('sort_order', $maxSort + 1),
         ]);
 
         return $this->sendResponse([
@@ -132,6 +197,11 @@ class FurnitureController extends BaseController
         $image = UserFurnitureImage::where('user_furniture_id', $furniture->id)
             ->where('id', $imageId)
             ->firstOrFail();
+
+        if (str_starts_with($image->image_url, '/storage/')) {
+            Storage::disk('public')->delete(ltrim($image->image_url, '/storage/'));
+        }
+
         $image->delete();
 
         return $this->sendResponse(null, 'Gambar furniture berhasil dihapus.');

@@ -20,6 +20,8 @@ class UpdateFurnitureRequest extends FormRequest
             'brand_id'      => 'sometimes|nullable|uuid|exists:brands,id',
             'brand_text'    => 'sometimes|nullable|string|max:255',
             'description'   => 'sometimes|nullable|string',
+            'images'        => 'nullable|array',
+            'images.*'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
         ];
     }
 }
