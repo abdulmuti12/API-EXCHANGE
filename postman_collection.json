@@ -1,0 +1,2128 @@
+{
+    "info": {
+        "name": "Exchange Product API",
+        "_postman_id": "exchange-product-2026",
+        "description": "REST API untuk sistem tukar furniture. JWT auth. 2 role: admin & user.",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "auth": {
+        "type": "noauth"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http:\/\/127.0.0.1:8088\/api"
+        },
+        {
+            "key": "admin_token",
+            "value": ""
+        },
+        {
+            "key": "user_token",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "Auth",
+            "description": "Login, register, logout",
+            "item": [
+                {
+                    "name": "Admin Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/auth\/admin\/login",
+                            "path": [
+                                "auth",
+                                "admin",
+                                "login"
+                            ]
+                        },
+                        "description": "Login admin, simpan token dari response untuk dipakai di request admin lain.",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "User Register",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/auth\/user\/register",
+                            "path": [
+                                "auth",
+                                "user",
+                                "register"
+                            ]
+                        },
+                        "description": "Registrasi user baru, langsung return token.",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "User Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/auth\/user\/login",
+                            "path": [
+                                "auth",
+                                "user",
+                                "login"
+                            ]
+                        },
+                        "description": "Login user, simpan token.",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Admin Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/auth\/admin\/logout",
+                            "path": [
+                                "auth",
+                                "admin",
+                                "logout"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "User Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/auth\/user\/logout",
+                            "path": [
+                                "auth",
+                                "user",
+                                "logout"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User Endpoints",
+            "description": "Semua endpoint dengan token user",
+            "item": [
+                {
+                    "name": "Get Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/profile",
+                            "path": [
+                                "user",
+                                "profile"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Profile",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/profile",
+                            "path": [
+                                "user",
+                                "profile"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"User Updated\",\n    \"phone_number\": \"08123\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "List Brands (dropdown)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/brands",
+                            "path": [
+                                "user",
+                                "brands"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Categories (dropdown)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/categories",
+                            "path": [
+                                "user",
+                                "categories"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Products (browse)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/products?page=1&per_page=10",
+                            "path": [
+                                "user",
+                                "products?page=1&per_page=10"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Product Detail",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/products\/REPLACE_PRODUCT_ID",
+                            "path": [
+                                "user",
+                                "products",
+                                "REPLACE_PRODUCT_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List My Furnitures",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/furnitures",
+                            "path": [
+                                "user",
+                                "furnitures"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Furniture (with category_id)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/furnitures",
+                            "path": [
+                                "user",
+                                "furnitures"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Kursi Kayu\",\n    \"category_id\": \"REPLACE_CATEGORY_ID\",\n    \"brand_id\": \"REPLACE_BRAND_ID\",\n    \"description\": \"Kondisi 90%\",\n    \"images\": []\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Add Furniture (with text fallback)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/furnitures",
+                            "path": [
+                                "user",
+                                "furnitures"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Lemari Custom\",\n    \"category_text\": \"Lemari\",\n    \"brand_text\": \"Custom\",\n    \"description\": \"Lemari kayu jati\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get My Furniture",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/furnitures\/REPLACE_FURNITURE_ID",
+                            "path": [
+                                "user",
+                                "furnitures",
+                                "REPLACE_FURNITURE_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Furniture",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/furnitures\/REPLACE_FURNITURE_ID",
+                            "path": [
+                                "user",
+                                "furnitures",
+                                "REPLACE_FURNITURE_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Kursi Updated\",\n    \"description\": \"Updated\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Add Furniture Image",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/furnitures\/REPLACE_FURNITURE_ID\/images",
+                            "path": [
+                                "user",
+                                "furnitures",
+                                "REPLACE_FURNITURE_ID",
+                                "images"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"image_url\": \"\\\/storage\\\/products\\\/example.jpg\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Furniture Image",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/furnitures\/REPLACE_FURNITURE_ID\/images\/REPLACE_IMAGE_ID",
+                            "path": [
+                                "user",
+                                "furnitures",
+                                "REPLACE_FURNITURE_ID",
+                                "images",
+                                "REPLACE_IMAGE_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Furniture",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/furnitures\/REPLACE_FURNITURE_ID",
+                            "path": [
+                                "user",
+                                "furnitures",
+                                "REPLACE_FURNITURE_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List My Transactions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/transactions",
+                            "path": [
+                                "user",
+                                "transactions"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Submit Transaction",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/transactions",
+                            "path": [
+                                "user",
+                                "transactions"
+                            ]
+                        },
+                        "description": "Body: id dari list furniture (status=available) + product (status=available).",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"user_furniture_id\": \"REPLACE_FURNITURE_ID\",\n    \"product_id\": \"REPLACE_PRODUCT_ID\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get My Transaction",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/transactions\/REPLACE_TRX_ID",
+                            "path": [
+                                "user",
+                                "transactions",
+                                "REPLACE_TRX_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Chat Messages",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/transactions\/REPLACE_TRX_ID\/messages",
+                            "path": [
+                                "user",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "messages"
+                            ]
+                        },
+                        "description": "Hanya bisa saat status=checking.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Send Chat Message",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/transactions\/REPLACE_TRX_ID\/messages",
+                            "path": [
+                                "user",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "messages"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"message\": \"Halo admin\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "List Notifications",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/notifications",
+                            "path": [
+                                "api",
+                                "user",
+                                "notifications"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Unread Notifications",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/notifications?unread_only=true",
+                            "path": [
+                                "api",
+                                "user",
+                                "notifications?unread_only=true"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark Notification Read",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/notifications\/REPLACE_NOTIF_ID\/read",
+                            "path": [
+                                "api",
+                                "user",
+                                "notifications",
+                                "REPLACE_NOTIF_ID",
+                                "read"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin Endpoints",
+            "description": "Semua endpoint dengan token admin",
+            "item": [
+                {
+                    "name": "Dashboard",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/dashboard",
+                            "path": [
+                                "admin",
+                                "dashboard"
+                            ]
+                        },
+                        "description": "Statistik agregat sistem.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Admins",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/admins?page=1&per_page=10",
+                            "path": [
+                                "admin",
+                                "admins?page=1&per_page=10"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Admin",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/admins",
+                            "path": [
+                                "admin",
+                                "admins"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Admin 2\",\n    \"email\": \"admin2@example.com\",\n    \"password\": \"password123\",\n    \"status\": \"active\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get Admin",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/admins\/REPLACE_ADMIN_ID",
+                            "path": [
+                                "admin",
+                                "admins",
+                                "REPLACE_ADMIN_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Admin",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/admins\/REPLACE_ADMIN_ID",
+                            "path": [
+                                "admin",
+                                "admins",
+                                "REPLACE_ADMIN_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Admin Updated\",\n    \"status\": \"active\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Admin",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/admins\/REPLACE_ADMIN_ID",
+                            "path": [
+                                "admin",
+                                "admins",
+                                "REPLACE_ADMIN_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Brands",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/brands?page=1",
+                            "path": [
+                                "admin",
+                                "brands?page=1"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Brand",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/brands",
+                            "path": [
+                                "admin",
+                                "brands"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Brand Baru\",\n    \"description\": \"Test\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get Brand",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/brands\/REPLACE_BRAND_ID",
+                            "path": [
+                                "admin",
+                                "brands",
+                                "REPLACE_BRAND_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Brand",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/brands\/REPLACE_BRAND_ID",
+                            "path": [
+                                "admin",
+                                "brands",
+                                "REPLACE_BRAND_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Brand Updated\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Brand",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/brands\/REPLACE_BRAND_ID",
+                            "path": [
+                                "admin",
+                                "brands",
+                                "REPLACE_BRAND_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Categories",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/categories?page=1",
+                            "path": [
+                                "admin",
+                                "categories?page=1"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Category",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/categories",
+                            "path": [
+                                "admin",
+                                "categories"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Kategori Baru\",\n    \"description\": \"Test\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get Category",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/categories\/REPLACE_CATEGORY_ID",
+                            "path": [
+                                "admin",
+                                "categories",
+                                "REPLACE_CATEGORY_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Category",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/categories\/REPLACE_CATEGORY_ID",
+                            "path": [
+                                "admin",
+                                "categories",
+                                "REPLACE_CATEGORY_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Kategori Updated\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Category",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/categories\/REPLACE_CATEGORY_ID",
+                            "path": [
+                                "admin",
+                                "categories",
+                                "REPLACE_CATEGORY_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Products",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/products?page=1",
+                            "path": [
+                                "admin",
+                                "products?page=1"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Product",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/products",
+                            "path": [
+                                "admin",
+                                "products"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Product Baru\",\n    \"category_id\": \"REPLACE_CATEGORY_ID\",\n    \"brand_id\": \"REPLACE_BRAND_ID\",\n    \"description\": \"Test\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get Product",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/products\/REPLACE_PRODUCT_ID",
+                            "path": [
+                                "admin",
+                                "products",
+                                "REPLACE_PRODUCT_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Product",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/products\/REPLACE_PRODUCT_ID",
+                            "path": [
+                                "admin",
+                                "products",
+                                "REPLACE_PRODUCT_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Product Updated\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Product",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/products\/REPLACE_PRODUCT_ID",
+                            "path": [
+                                "admin",
+                                "products",
+                                "REPLACE_PRODUCT_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Product Image",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/products\/REPLACE_PRODUCT_ID\/images",
+                            "path": [
+                                "admin",
+                                "products",
+                                "REPLACE_PRODUCT_ID",
+                                "images"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"image_url\": \"\\\/storage\\\/products\\\/example.jpg\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Product Image",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/products\/REPLACE_PRODUCT_ID\/images\/REPLACE_IMAGE_ID",
+                            "path": [
+                                "admin",
+                                "products",
+                                "REPLACE_PRODUCT_ID",
+                                "images",
+                                "REPLACE_IMAGE_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List Transactions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions?status=pending",
+                            "path": [
+                                "admin",
+                                "transactions?status=pending"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Transaction",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions\/REPLACE_TRX_ID",
+                            "path": [
+                                "admin",
+                                "transactions",
+                                "REPLACE_TRX_ID"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Start Checking (pending\u2192checking)",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions\/REPLACE_TRX_ID\/checking",
+                            "path": [
+                                "admin",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "checking"
+                            ]
+                        },
+                        "description": "Hanya untuk status=pending.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Approve (checking\u2192approved)",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions\/REPLACE_TRX_ID\/approve",
+                            "path": [
+                                "admin",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "approve"
+                            ]
+                        },
+                        "description": "Hanya untuk status=checking. Furniture & product jadi swapped.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Reject (with reason)",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions\/REPLACE_TRX_ID\/reject",
+                            "path": [
+                                "admin",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "reject"
+                            ]
+                        },
+                        "description": "reject_reason wajib (min 3 char).",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"reject_reason\": \"Lemari tidak sesuai spesifikasi.\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Get Chat Messages",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions\/REPLACE_TRX_ID\/messages",
+                            "path": [
+                                "admin",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "messages"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Send Chat Message",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions\/REPLACE_TRX_ID\/messages",
+                            "path": [
+                                "admin",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "messages"
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"message\": \"Halo, mari kita cek detail\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Negative Cases",
+            "description": "Kasus-kasus yang seharusnya gagal",
+            "item": [
+                {
+                    "name": "[NEG] Login admin password salah",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/auth\/admin\/login",
+                            "path": [
+                                "auth",
+                                "admin",
+                                "login"
+                            ]
+                        },
+                        "description": "Harusnya 401.",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"wrongpass\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "[NEG] Register email kembar",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/auth\/user\/register",
+                            "path": [
+                                "auth",
+                                "user",
+                                "register"
+                            ]
+                        },
+                        "description": "Harusnya 422 (email sudah terdaftar).",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"X\",\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "[NEG] Tanpa token",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/profile",
+                            "path": [
+                                "user",
+                                "profile"
+                            ]
+                        },
+                        "description": "Harusnya 401."
+                    }
+                },
+                {
+                    "name": "[NEG] Token admin akses endpoint user",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/profile",
+                            "path": [
+                                "user",
+                                "profile"
+                            ]
+                        },
+                        "description": "Harusnya 403.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "[NEG] Token user akses endpoint admin",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/dashboard",
+                            "path": [
+                                "admin",
+                                "dashboard"
+                            ]
+                        },
+                        "description": "Harusnya 403.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "[NEG] Submit transaksi tanpa reject_reason saat reject",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions\/REPLACE_TRX_ID\/reject",
+                            "path": [
+                                "admin",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "reject"
+                            ]
+                        },
+                        "description": "Harusnya 422.",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "[NEG] Chat saat status pending",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/user\/transactions\/REPLACE_TRX_ID\/messages",
+                            "path": [
+                                "user",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "messages"
+                            ]
+                        },
+                        "description": "Harusnya 422 (chat hanya saat checking).",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{user_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"message\": \"test\"\n}",
+                            "options": {
+                                "language": "json"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "[NEG] Approve transaksi approved",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}\/admin\/transactions\/REPLACE_TRX_ID\/approve",
+                            "path": [
+                                "admin",
+                                "transactions",
+                                "REPLACE_TRX_ID",
+                                "approve"
+                            ]
+                        },
+                        "description": "Harusnya 422 (status final).",
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{admin_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class UserFurnitureResource extends JsonResource
+{
+    public function toArray($request): array
+    {
+        return [
+            'id'            => $this->id,
+            'user_id'       => $this->user_id,
+            'name'          => $this->name,
+            'description'   => $this->description,
+            'status'        => $this->status,
+            'category_id'   => $this->category_id,
+            'category_text' => $this->category_text,
+            'category'      => $this->whenLoaded('category', fn () => $this->category ? new CategoryResource($this->category) : null),
+            'brand_id'      => $this->brand_id,
+            'brand_text'    => $this->brand_text,
+            'brand'         => $this->whenLoaded('brand', fn () => $this->brand ? new BrandResource($this->brand) : null),
+            'images'        => $this->whenLoaded('images', fn () => $this->images->pluck('image_url')->values()),
+            'created_at'    => $this->created_at,
+            'updated_at'    => $this->updated_at,
+        ];
+    }
+}

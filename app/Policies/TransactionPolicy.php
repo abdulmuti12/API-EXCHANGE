@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\Admin;
+use App\Models\Transaction;
+use App\Models\User;
+
+class TransactionPolicy
+{
+    public function view(User $user, Transaction $transaction): bool
+    {
+        return $user->id === $transaction->user_id;
+    }
+
+    public function viewAdmin(Admin $admin, Transaction $transaction): bool
+    {
+        return true;
+    }
+}
