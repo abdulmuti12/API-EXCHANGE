@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\TransactionController as AdminTransactionControll
 use App\Http\Controllers\Api\TransactionMessageController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
 use App\Http\Controllers\User\FurnitureController;
+use App\Http\Controllers\User\GoogleAuthController;
 use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\ProductController as UserProductController;
 use App\Http\Controllers\User\ProfileController;
@@ -27,6 +28,9 @@ Route::prefix('auth')->group(function () {
 
     Route::post('admin/logout', [AdminAuthController::class, 'logout'])->middleware('role:admin');
     Route::post('user/logout',  [UserAuthController::class, 'logout'])->middleware('role:user');
+
+    Route::get('user/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
+    Route::post('user/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 });
 
 // ============================================================================
@@ -80,7 +84,6 @@ Route::prefix('user')->middleware('role:user')->group(function () {
 
     // User furnitures (own only, via policy)
     Route::apiResource('furnitures', FurnitureController::class);
-    Route::post('furnitures/{id}',                 [FurnitureController::class, 'update']);
     Route::post('furnitures/{id}/images',          [FurnitureController::class, 'storeImage']);
     Route::delete('furnitures/{id}/images/{imageId}', [FurnitureController::class, 'destroyImage']);
 
