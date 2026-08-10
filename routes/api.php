@@ -80,6 +80,7 @@ Route::prefix('user')->middleware('role:user')->group(function () {
 
     // User furnitures (own only, via policy)
     Route::apiResource('furnitures', FurnitureController::class);
+    Route::post('furnitures/{id}',                 [FurnitureController::class, 'update']);
     Route::post('furnitures/{id}/images',          [FurnitureController::class, 'storeImage']);
     Route::delete('furnitures/{id}/images/{imageId}', [FurnitureController::class, 'destroyImage']);
 

@@ -91,7 +91,7 @@ class FurnitureController extends BaseController
     public function update(Request $request, string $id): JsonResponse
     {
         $request->validate([
-            'name'          => 'sometimes|required|string|max:255',
+            'name'          => 'sometimes|nullable|string|max:255',
             'category_id'   => 'sometimes|nullable|uuid|exists:categories,id',
             'category_text' => 'sometimes|nullable|string|max:255',
             'brand_id'      => 'sometimes|nullable|uuid|exists:brands,id',
@@ -99,42 +99,59 @@ class FurnitureController extends BaseController
             'description'   => 'sometimes|nullable|string',
             'images'        => 'nullable|array',
             'images.*'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
-            'remove_images' => 'nullable|array',
-            'remove_images.*' => 'string|exists:user_furniture_images,id',
+            'remove_images' => 'nullable',
         ]);
 
         $furniture = $this->findOwned($id);
 
         $updateData = $request->only(['name', 'description', 'category_id', 'category_text', 'brand_id', 'brand_text']);
-        $furniture->update($updateData);
 
-        // Remove deleted images
-        if ($request->filled('remove_images')) {
-            foreach ($request->input('remove_images') as $imageId) {
-                $image = $furniture->images()->where('id', $imageId)->first();
-                if ($image) {
-                    Storage::disk('public')->delete(ltrim($image->image_url, '/'));
-                    $image->delete();
-                }
+        logger()->info('[Furniture Update] Debug', [
+            'id'         => $furniture->id,
+            'method'     => $request->method(),
+            'all_input'  => $request->all(),
+            'updateData' => $updateData,
+            'has_files'  => $request->hasFile('images'),
+        ]);
+
+        $updated = $furniture->update($updateData);
+
+        logger()->info('[Furniture Update] Result', [
+            'id'          => $furniture->id,
+            'success'     => $updated,
+            'dirty_after' => $furniture->getDirty(),
+        ]);
+
+        $removeIds = $request->input('remove_images');
+        if (is_string($removeIds)) {
+            $decoded = json_decode($removeIds, true);
+            $removeIds = is_array($decoded) ? $decoded : [];
+        }
+        if (is_array($removeIds) && count($removeIds) > 0) {
+            foreach ($furniture->images()->whereIn('id', $removeIds)->get() as $image) {
+                $relative = preg_replace('#^/storage/#', '', $image->image_url);
+                Storage::disk('public')->delete($relative);
+                $image->delete();
             }
         }
 
-        // Add new uploaded images
         if ($request->hasFile('images')) {
-            $maxSort = (int) $furniture->images()->max('sort_order');
+            $maxSort = (int) $furniture->images()->max('sort_order') ?: 0;
             foreach ($request->file('images') as $i => $image) {
-                if ($image) {
+                if ($image && $image->isValid()) {
                     $path = $image->store('user_furnitures', 'public');
                     $furniture->images()->create([
-                        'image_url' => '/storage/' . $path,
+                        'image_url'  => '/storage/' . $path,
                         'sort_order' => $maxSort + 1 + $i,
                     ]);
                 }
             }
         }
 
+        $furniture->load(['category', 'brand', 'images']);
+
         return $this->sendResponse(
-            new UserFurnitureResource($furniture->fresh()->load(['category', 'brand', 'images'])),
+            new UserFurnitureResource($furniture),
             'Furniture berhasil diperbarui.'
         );
     }
@@ -198,8 +215,8 @@ class FurnitureController extends BaseController
             ->where('id', $imageId)
             ->firstOrFail();
 
-        if (str_starts_with($image->image_url, '/storage/')) {
-            Storage::disk('public')->delete(ltrim($image->image_url, '/storage/'));
+        if ($image->image_url && str_starts_with($image->image_url, '/storage/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $image->image_url));
         }
 
         $image->delete();
