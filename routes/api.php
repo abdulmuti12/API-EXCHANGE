@@ -21,12 +21,12 @@ use Illuminate\Support\Facades\Route;
 // AUTH (public)
 // ============================================================================
 Route::prefix('auth')->group(function () {
-    Route::post('admin/login', [AdminAuthController::class, 'login']);
+    Route::post('systemAdmin/login', [AdminAuthController::class, 'login']);
 
     Route::post('user/register', [UserAuthController::class, 'register']);
     Route::post('user/login',    [UserAuthController::class, 'login']);
 
-    Route::post('admin/logout', [AdminAuthController::class, 'logout'])->middleware('role:admin');
+    Route::post('systemAdmin/logout', [AdminAuthController::class, 'logout'])->middleware('role:admin');
     Route::post('user/logout',  [UserAuthController::class, 'logout'])->middleware('role:user');
 
     Route::get('user/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
@@ -36,7 +36,7 @@ Route::prefix('auth')->group(function () {
 // ============================================================================
 // ADMIN ROUTES (token admin only)
 // ============================================================================
-Route::prefix('admin')->middleware('role:admin')->group(function () {
+Route::prefix('systemAdmin')->middleware('role:admin')->group(function () {
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index']);
 

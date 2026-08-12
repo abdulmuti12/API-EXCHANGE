@@ -136,12 +136,12 @@ class TransactionStateMachineTest extends TestCase
         $this->furniture->update(['status' => 'in_transaction']);
 
         // pending -> checking
-        $this->patchJson("/api/admin/transactions/{$trx->id}/checking", [], $this->authAdmin())
+        $this->patchJson("/api/systemAdmin/transactions/{$trx->id}/checking", [], $this->authAdmin())
             ->assertOk()
             ->assertJsonPath('data.status', 'checking');
 
         // checking -> approved
-        $this->patchJson("/api/admin/transactions/{$trx->id}/approve", [], $this->authAdmin())
+        $this->patchJson("/api/systemAdmin/transactions/{$trx->id}/approve", [], $this->authAdmin())
             ->assertOk()
             ->assertJsonPath('data.status', 'approved');
 
@@ -158,7 +158,7 @@ class TransactionStateMachineTest extends TestCase
             'status'            => 'pending',
         ]);
 
-        $this->patchJson("/api/admin/transactions/{$trx->id}/approve", [], $this->authAdmin())
+        $this->patchJson("/api/systemAdmin/transactions/{$trx->id}/approve", [], $this->authAdmin())
             ->assertStatus(422);
     }
 
@@ -172,7 +172,7 @@ class TransactionStateMachineTest extends TestCase
             'admin_id'          => $this->admin->id,
         ]);
 
-        $this->patchJson("/api/admin/transactions/{$trx->id}/approve", [], $this->authAdmin())
+        $this->patchJson("/api/systemAdmin/transactions/{$trx->id}/approve", [], $this->authAdmin())
             ->assertStatus(422);
     }
 
@@ -185,7 +185,7 @@ class TransactionStateMachineTest extends TestCase
             'status'            => 'pending',
         ]);
 
-        $this->patchJson("/api/admin/transactions/{$trx->id}/reject", [], $this->authAdmin())
+        $this->patchJson("/api/systemAdmin/transactions/{$trx->id}/reject", [], $this->authAdmin())
             ->assertStatus(422)
             ->assertJsonPath('error.reject_reason.0', 'The reject reason field is required.');
     }
@@ -200,7 +200,7 @@ class TransactionStateMachineTest extends TestCase
         ]);
         $this->furniture->update(['status' => 'in_transaction']);
 
-        $this->patchJson("/api/admin/transactions/{$trx->id}/reject", [
+        $this->patchJson("/api/systemAdmin/transactions/{$trx->id}/reject", [
             'reject_reason' => 'Tidak sesuai kriteria',
         ], $this->authAdmin())->assertOk()->assertJsonPath('data.status', 'rejected');
 
@@ -226,7 +226,7 @@ class TransactionStateMachineTest extends TestCase
             'reject_reason'     => 'alasan',
         ]);
 
-        $this->patchJson("/api/admin/transactions/{$trx->id}/reject", [
+        $this->patchJson("/api/systemAdmin/transactions/{$trx->id}/reject", [
             'reject_reason' => 'lagi',
         ], $this->authAdmin())->assertStatus(422);
     }

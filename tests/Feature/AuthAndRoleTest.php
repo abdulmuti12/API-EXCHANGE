@@ -92,7 +92,7 @@ class AuthAndRoleTest extends TestCase
 
     public function test_token_user_tidak_boleh_akses_endpoint_admin(): void
     {
-        $this->getJson('/api/admin/dashboard', [
+        $this->getJson('/api/systemAdmin/dashboard', [
             'Authorization' => "Bearer {$this->userToken}",
         ])->assertStatus(403);
     }
@@ -100,6 +100,6 @@ class AuthAndRoleTest extends TestCase
     public function test_tanpa_token_mengembalikan_401(): void
     {
         $this->getJson('/api/user/profile')->assertStatus(401);
-        $this->getJson('/api/admin/dashboard')->assertStatus(401);
+        $this->getJson('/api/systemAdmin/dashboard')->assertStatus(401);
     }
 }
