@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
 use App\Http\Controllers\Api\TransactionMessageController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
+use App\Http\Controllers\User\ForgotPasswordController;
 use App\Http\Controllers\User\FurnitureController;
 use App\Http\Controllers\User\GoogleAuthController;
 use App\Http\Controllers\User\NotificationController;
@@ -31,6 +32,11 @@ Route::prefix('auth')->group(function () {
 
     Route::get('user/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
     Route::post('user/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+
+    // Forgot Password
+    Route::post('forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp']);
+    Route::post('forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
+    Route::post('forgot-password/reset', [ForgotPasswordController::class, 'resetPassword']);
 });
 
 // ============================================================================

@@ -48,7 +48,7 @@ class AuthAndRoleTest extends TestCase
 
     public function test_admin_login_success(): void
     {
-        $response = $this->postJson('/api/auth/admin/login', [
+        $response = $this->postJson('/api/auth/systemAdmin/login', [
             'email' => 'admin@test.com',
             'password' => 'password123',
         ]);
@@ -59,7 +59,7 @@ class AuthAndRoleTest extends TestCase
 
     public function test_admin_login_wrong_password(): void
     {
-        $response = $this->postJson('/api/auth/admin/login', [
+        $response = $this->postJson('/api/auth/systemAdmin/login', [
             'email' => 'admin@test.com',
             'password' => 'wrongpass',
         ]);

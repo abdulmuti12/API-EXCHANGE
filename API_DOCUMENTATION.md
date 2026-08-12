@@ -245,7 +245,120 @@ POST /auth/user/google/callback
 }
 ```
 
-### 3.5 Logout
+### 3.5 忘记密码（Forgot Password）
+
+#### 3.5.1 发送 OTP
+
+```
+POST /auth/forgot-password/send-otp
+```
+
+**请求参数：**
+```json
+{
+  "email": "john@example.com"  // required, email, 必须存在于系统中
+}
+```
+
+**响应（200）：**
+```json
+{
+  "success": true,
+  "message": "Kode OTP telah dikirim ke email Anda.",
+  "data": null,
+  "status": 200
+}
+```
+
+**错误（429 — 请求过于频繁）：**
+```json
+{
+  "success": false,
+  "message": "Rate limit terlampaui.",
+  "error": { "email": ["Terlalu banyak permintaan. Tunggu beberapa menit lagi."] },
+  "status": 429
+}
+```
+
+---
+
+#### 3.5.2 验证 OTP
+
+```
+POST /auth/forgot-password/verify-otp
+```
+
+**请求参数：**
+```json
+{
+  "email": "john@example.com",  // required, email
+  "otp": "123456"               // required, string, 6位数字
+}
+```
+
+**响应（200）：**
+```json
+{
+  "success": true,
+  "message": "OTP berhasil diverifikasi. Silakan buat password baru.",
+  "data": {
+    "email": "john@example.com"
+  },
+  "status": 200
+}
+```
+
+**错误（422 — OTP 错误或已过期）：**
+```json
+{
+  "success": false,
+  "message": "Verifikasi OTP gagal.",
+  "error": { "otp": ["Kode OTP salah atau telah kedaluwarsa."] },
+  "status": 422
+}
+```
+
+---
+
+#### 3.5.3 重置密码
+
+```
+POST /auth/forgot-password/reset
+```
+
+**请求参数：**
+```json
+{
+  "email": "john@example.com",    // required, email
+  "otp": "123456",                 // required, string, 6位数字
+  "password": "newpassword123",    // required, string, min 6
+  "password_confirmation": "newpassword123"  // required, 必须与 password 一致
+}
+```
+
+**响应（200）：**
+```json
+{
+  "success": true,
+  "message": "Password berhasil diubah. Silakan login dengan password baru.",
+  "data": null,
+  "status": 200
+}
+```
+
+**错误（422 — OTP 错误或已过期）：**
+```json
+{
+  "success": false,
+  "message": "Reset password gagal.",
+  "error": { "otp": ["Kode OTP salah atau telah kedaluwarsa."] },
+  "status": 422
+}
+```
+
+---
+
+### 3.6 Logout
 
 ```
 POST /auth/user/logout            // requires role:user
