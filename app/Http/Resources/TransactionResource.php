@@ -19,9 +19,10 @@ class TransactionResource extends JsonResource
             'user_furniture'    => $this->whenLoaded('userFurniture', fn () => new UserFurnitureResource($this->userFurniture)),
             'product'           => $this->whenLoaded('product', fn () => new ProductResource($this->product)),
             'user'              => $this->whenLoaded('user', fn () => [
-                'id'    => $this->user->id,
-                'name'  => $this->user->name,
-                'email' => $this->user->email,
+                'id'           => $this->user->id,
+                'name'         => $this->user->name,
+                'email'        => $this->user->email,
+                'phone_number' => $this->user->phone_number,
             ]),
             'admin'             => $this->whenLoaded('admin', fn () => $this->admin ? [
                 'id'    => $this->admin->id,

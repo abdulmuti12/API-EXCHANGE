@@ -7,12 +7,28 @@ use App\Http\Requests\Admin\LoginRequest;
 use App\Models\Admin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends BaseController
 {
     public function login(LoginRequest $request): JsonResponse
     {
+        $email = $request->input('email');
+        $ip = $request->ip() ?? 'unknown';
+
+        $key = 'login-admin:' . md5($email . $ip);
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            return $this->sendError(
+                ['auth' => ["Terlalu banyak percobaan. Coba lagi dalam {$seconds} detik."]],
+                'Rate limit exceeded.',
+                429
+            );
+        }
+
+        RateLimiter::hit($key, 60);
+
         $credentials = $request->only('email', 'password');
 
         $token = Auth::guard('admin')->attempt($credentials);
