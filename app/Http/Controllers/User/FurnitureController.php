@@ -90,6 +90,59 @@ class FurnitureController extends BaseController
 
     public function update(Request $request, string $id): JsonResponse
     {
+        $furniture = $this->findOwned($id);
+
+        // Handle multipart form data manually for PUT requests
+        $contentType = $request->header('Content-Type');
+        $customFiles = [];
+
+        if ($contentType && str_contains($contentType, 'multipart/form-data')) {
+            $boundary = null;
+            if (preg_match('/boundary=(.*)$/', $contentType, $matches)) {
+                $boundary = trim($matches[1]);
+            }
+
+            if ($boundary) {
+                $rawInput = $request->getContent();
+                $parts = preg_split('/--' . preg_quote($boundary, '/') . '(?:--)?/', $rawInput, -1, PREG_SPLIT_NO_EMPTY);
+                $parsedData = [];
+                $fileIndex = 0;
+
+                foreach ($parts as $part) {
+                    if (preg_match('/Content-Disposition:\s*form-data;\s*name="([^"]+)"(; filename="([^"]+)")?/', $part, $match)) {
+                        $fieldName = $match[1];
+                        $filename = $match[3] ?? null;
+
+                        if ($filename) {
+                            // This is a file upload
+                            $tempFile = tempnam(sys_get_temp_dir(), 'upload_');
+                            $content = preg_replace('/.*\r\n\r\n/', '', $part);
+                            file_put_contents($tempFile, $content);
+                            $customFiles[] = new \Illuminate\Http\UploadedFile(
+                                $tempFile,
+                                $filename,
+                                mime_content_type($tempFile),
+                                0,
+                                true // marked as test
+                            );
+                            $fileIndex++;
+                        } else {
+                            // This is a regular field
+                            $value = trim(preg_replace('/.*\r\n\r\n/', '', $part));
+                            $parsedData[$fieldName] = $value;
+                        }
+                    }
+                }
+                $request->merge($parsedData);
+            }
+        }
+
+        // Merge custom files into request
+        if (!empty($customFiles)) {
+            $customFilesArray = ['images' => $customFiles];
+            $request->files->replace(array_merge($request->files->all(), $customFilesArray));
+        }
+
         $request->validate([
             'name'          => 'sometimes|nullable|string|max:255',
             'category_id'   => 'sometimes|nullable|uuid|exists:categories,id',
@@ -97,30 +150,12 @@ class FurnitureController extends BaseController
             'brand_id'      => 'sometimes|nullable|uuid|exists:brands,id',
             'brand_text'    => 'sometimes|nullable|string|max:255',
             'description'   => 'sometimes|nullable|string',
-            'images'        => 'nullable|array',
-            'images.*'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
             'remove_images' => 'nullable',
         ]);
 
-        $furniture = $this->findOwned($id);
-
         $updateData = $request->only(['name', 'description', 'category_id', 'category_text', 'brand_id', 'brand_text']);
 
-        logger()->info('[Furniture Update] Debug', [
-            'id'         => $furniture->id,
-            'method'     => $request->method(),
-            'all_input'  => $request->all(),
-            'updateData' => $updateData,
-            'has_files'  => $request->hasFile('images'),
-        ]);
-
         $updated = $furniture->update($updateData);
-
-        logger()->info('[Furniture Update] Result', [
-            'id'          => $furniture->id,
-            'success'     => $updated,
-            'dirty_after' => $furniture->getDirty(),
-        ]);
 
         $removeIds = $request->input('remove_images');
         if (is_string($removeIds)) {

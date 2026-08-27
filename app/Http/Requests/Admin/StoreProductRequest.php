@@ -19,16 +19,16 @@ class StoreProductRequest extends FormRequest
             'category_id' => 'required|uuid|exists:categories,id',
             'brand_id'    => 'required|uuid|exists:brands,id',
             'description' => 'nullable|string',
-            'image1'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'image2'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'image3'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'image4'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'image5'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'image6'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'image1'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:10240',
+            'image2'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:10240',
+            'image3'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:10240',
+            'image4'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:10240',
+            'image5'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:10240',
+            'image6'      => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:10240',
             'price'       => 'nullable|numeric|min:0',
             'status'      => ['nullable', Rule::in(['available', 'swapped', 'inactive'])],
             'images'      => 'nullable|array',
-            'images.*'    => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'images.*'    => 'nullable|file|image|mimes:jpeg,jpg,png,webp|max:10240',
         ];
     }
 }

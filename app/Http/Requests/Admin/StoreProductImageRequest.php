@@ -14,7 +14,7 @@ class StoreProductImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image'      => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
+            'image'      => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:10240'],
             'image_url'  => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ];
