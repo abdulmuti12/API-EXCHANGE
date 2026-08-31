@@ -54,7 +54,7 @@ class FurnitureController extends BaseController
             'brand_text'    => 'nullable|string|max:255|required_without:brand_id',
             'description'   => 'nullable|string',
             'images'        => 'nullable|array',
-            'images.*'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'images.*'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,heic|max:10240',
         ]);
 
         $data = $request->only(['name', 'description', 'category_id', 'category_text', 'brand_id', 'brand_text']);
@@ -212,7 +212,7 @@ class FurnitureController extends BaseController
     {
         $request->validate([
             'image_url' => 'nullable|string|max:255',
-            'image'     => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'image'     => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,heic|max:10240',
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
